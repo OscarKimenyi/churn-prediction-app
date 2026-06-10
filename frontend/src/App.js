@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/Login";
 import Register from "./components/Register";
@@ -11,7 +11,7 @@ function App() {
   const applyTheme = (dark) => {
     document.documentElement.setAttribute(
       "data-bs-theme",
-      dark ? "dark" : "light"
+      dark ? "dark" : "light",
     );
     localStorage.setItem("theme", dark ? "dark" : "light");
     setIsDark(dark);
