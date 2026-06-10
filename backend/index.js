@@ -49,7 +49,7 @@ app.post("/register", async (req, res) => {
       (err) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ message: "Registered successfully" });
-      }
+      },
     );
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -71,10 +71,10 @@ app.post("/login", (req, res) => {
       const token = jwt.sign(
         { id: results[0].id, role: results[0].role },
         process.env.JWT_SECRET,
-        { expiresIn: "24h" }
+        { expiresIn: "24h" },
       );
       res.json({ token });
-    }
+    },
   );
 });
 
@@ -98,7 +98,7 @@ app.get("/me", authenticate, (req, res) => {
       if (err || !results.length)
         return res.status(404).json({ error: "User not found" });
       res.json(results[0]);
-    }
+    },
   );
 });
 
@@ -134,10 +134,10 @@ app.post("/upload", authenticate, upload.single("file"), (req, res) => {
               headers: form.getHeaders(),
             })
             .then(() =>
-              res.json({ message: "Data uploaded and training started" })
+              res.json({ message: "Data uploaded and training started" }),
             )
             .catch((err) => res.status(500).json({ error: err.message }));
-        }
+        },
       );
     });
 });
@@ -180,7 +180,7 @@ app.post("/predict", authenticate, (req, res) => {
                     c.name || `Customer ${c.id}`
                   }`,
                   text: `Probability: ${(prob * 100).toFixed(
-                    1
+                    1,
                   )}%\nRecommendation: ${rec}\nDetails: Tenure ${
                     c.tenure
                   }, Usage ${c.usage_freq}, Complaints ${c.complaints}`,
@@ -203,13 +203,13 @@ app.post("/predict", authenticate, (req, res) => {
             [inserts],
             (err) => {
               if (err) console.error("Save predictions failed:", err);
-            }
+            },
           );
 
           res.json({ results });
         })
         .catch((err) => res.status(500).json({ error: err.message }));
-    }
+    },
   );
 });
 
@@ -225,7 +225,7 @@ app.get("/dashboard", authenticate, (req, res) => {
     (err, results) => {
       if (err) return res.status(500).json({ error: err.message });
       res.json(results[0] || { avg_churn: 0, total_customers: 0 });
-    }
+    },
   );
 });
 
@@ -244,9 +244,9 @@ app.post("/clear-data", authenticate, (req, res) => {
           if (err)
             return res.status(500).json({ error: "Clear customers failed" });
           res.json({ message: "All data cleared" });
-        }
+        },
       );
-    }
+    },
   );
 });
 
@@ -266,7 +266,7 @@ app.get("/report", authenticate, (req, res) => {
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader(
         "Content-Disposition",
-        "attachment; filename=churn_report.pdf"
+        "attachment; filename=churn_report.pdf",
       );
       doc.pipe(res);
 
@@ -280,12 +280,14 @@ app.get("/report", authenticate, (req, res) => {
               row.tenure
             } | Usage: ${row.usage_freq} | Complaints: ${
               row.complaints
-            } | Risk: ${(row.churn_prob * 100 || 0).toFixed(1)}%`
+            } | Risk: ${(row.churn_prob * 100 || 0).toFixed(1)}%`,
           );
       });
       doc.end();
-    }
+    },
   );
 });
 
-app.listen(3000, () => console.log("Backend running on port 3000"));
+app.listen(process.env.PORT || 3000, () =>
+  console.log("Backend running on port 3000"),
+);
